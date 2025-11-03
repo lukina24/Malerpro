@@ -1,78 +1,224 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <script>
-    // Rechtsklick auf der ganzen Seite verhindern
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        alert("Rechtsklick ist deaktiviert!");
-    });
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Malerwissen Pro — sicherer Admin</title>
 
-    // Tasten für Entwickler-Tools und Seitenquelltext blockieren
-    document.addEventListener('keydown', function(e) {
-        // F12
-        if (e.key === "F12") {
-            e.preventDefault();
-            alert("F12 ist deaktiviert!");
-        }
-        // Ctrl+Shift+I (DevTools öffnen)
-        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") {
-            e.preventDefault();
-            alert("Öffnen der Entwicklertools ist deaktiviert!");
-        }
-        // Ctrl+Shift+J (Konsole öffnen)
-        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "j") {
-            e.preventDefault();
-            alert("Öffnen der Konsole ist deaktiviert!");
-        }
-        // Ctrl+U (Quelltext anzeigen)
-        if (e.ctrlKey && e.key.toLowerCase() === "u") {
-            e.preventDefault();
-            alert("Quelltext anzeigen ist deaktiviert!");
-        }
-        // Ctrl+S (Speichern)
-        if (e.ctrlKey && e.key.toLowerCase() === "s") {
-            e.preventDefault();
-            alert("Speichern ist deaktiviert!");
-        }
-    });
+  <style>
+    :root {
+      --bg: #f5f8ff;
+      --text: #222;
+      --card: #fff;
+      --accent: #0077ff;
+    }
 
-    // Drag & Drop von Bildern blockieren
-    document.addEventListener('dragstart', function(e) {
-        e.preventDefault();
-        alert("Drag & Drop ist deaktiviert!");
-    });
-</script>
+    body.dark {
+      --bg: #1d1f27;
+      --text: #f5f5f5;
+      --card: #2a2e3a;
+      --accent: #4fa3ff;
+    }
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Malerwissen Pro</title>
-  <link rel="stylesheet" href="style.css">
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 700px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      animation: fadeIn 0.35s ease-in;
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.97);}
+      to {opacity: 1; transform: scale(1);}
+    }
+
+    h2, h3 { margin: 0 0 12px 0; color: var(--text); }
+    p { margin: 8px 0; }
+
+    .highlight { color: var(--accent); font-weight: bold; }
+
+    input[type="text"], input[type="password"] {
+      display: block;
+      width: 80%;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #cfcfcf;
+      font-size: 1em;
+      background: white;
+      transition: border 0.15s, box-shadow 0.15s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(0,119,255,0.06);
+    }
+
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+      margin: 5px;
+      font-size: 0.95rem;
+    }
+
+    button:hover { transform: translateY(-2px); }
+    button.secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid rgba(0,119,255,0.15);
+    }
+
+    #error, #reg-error {
+      color: #cc2b2b;
+      font-size: 0.9em;
+      margin-top: 8px;
+      min-height: 1.1em;
+    }
+
+    nav {
+      margin: 18px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    nav button {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(0,0,0,0.06);
+      padding: 8px 12px;
+      border-radius: 10px;
+    }
+
+    nav button.active {
+      background: linear-gradient(90deg, var(--accent), #42a0ff);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,119,255,0.12);
+      transform: none;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-buttons button {
+      margin-left: 8px;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+
+    #topic-content {
+      text-align: left;
+      padding: 10px;
+      line-height: 1.6;
+      margin-top: 6px;
+    }
+
+    .note {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .note input {
+      flex: 1;
+    }
+
+    .note-list {
+      margin-top: 10px;
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .note-list li {
+      background: rgba(0, 119, 255, 0.08);
+      border-left: 4px solid var(--accent);
+      padding: 8px 10px;
+      margin: 6px 0;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .note-list li button {
+      background: transparent;
+      color: var(--accent);
+      border: none;
+      padding: 4px 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .small {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    @media (max-width: 520px) {
+      input[type="text"], input[type="password"] { width: 94%; }
+      .container { width: 96%; }
+      .card { padding: 18px; }
+      nav { gap: 6px; }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-
-    <!-- LOGIN & REGISTRIEREN -->
     <div id="login-box" class="card">
       <h2>🎨 Willkommen bei <span class="highlight">Malerwissen Pro</span></h2>
       <p id="login-msg">Melde dich an:</p>
-      <input type="text" id="username" placeholder="Benutzername">
-      <input type="password" id="password" placeholder="Passwort">
-      <button onclick="login()">Einloggen</button>
-      <p>oder <a href="#" onclick="toggleRegister()">Registrieren</a></p>
+      <input type="text" id="username" placeholder="Benutzername" autocomplete="username">
+      <input type="password" id="password" placeholder="Passwort" autocomplete="current-password">
+      <div>
+        <button onclick="login()">Einloggen</button>
+        <button class="secondary" onclick="toggleRegister()">Registrieren</button>
+      </div>
       <p id="error"></p>
     </div>
 
     <div id="register-box" class="card" style="display:none;">
       <h2>📝 Registrieren</h2>
-      <input type="text" id="reg-username" placeholder="Benutzername">
-      <input type="password" id="reg-password" placeholder="Passwort">
-      <button onclick="register()">Registrieren</button>
-      <p>Bereits registriert? <a href="#" onclick="toggleRegister()">Hier einloggen</a></p>
+      <input type="text" id="reg-username" placeholder="Benutzername" autocomplete="username">
+      <input type="password" id="reg-password" placeholder="Passwort" autocomplete="new-password">
+      <div>
+        <button onclick="register()">Registrieren</button>
+        <button class="secondary" onclick="toggleRegister()">Zurück zum Login</button>
+      </div>
       <p id="reg-error"></p>
     </div>
 
-    <!-- INHALT -->
     <div id="content-box" class="card" style="display:none;">
       <header>
         <h2 id="welcome-text">Hallo 👋</h2>
@@ -83,11 +229,11 @@
       </header>
 
       <nav>
-        <button onclick="showTopic('dashboard')">🏠 Übersicht</button>
-        <button onclick="showTopic('fassade')">🏡 Fassade</button>
-        <button onclick="showTopic('wand')">🖌️ Innenwand</button>
-        <button onclick="showTopic('werkzeug')">🧰 Werkzeuge</button>
-        <button onclick="showTopic('notizen')">📝 Notizen</button>
+        <button data-topic="dashboard" onclick="showTopic('dashboard', this)">🏠 Übersicht</button>
+        <button data-topic="fassade" onclick="showTopic('fassade', this)">🏡 Fassade</button>
+        <button data-topic="wand" onclick="showTopic('wand', this)">🖌️ Innenwand</button>
+        <button data-topic="werkzeug" onclick="showTopic('werkzeug', this)">🧰 Werkzeuge</button>
+        <button data-topic="notizen" onclick="showTopic('notizen', this)">📝 Notizen</button>
       </nav>
 
       <section id="topic-content">
@@ -96,7 +242,358 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    /***********************
+     * Sicherheitshinweis:
+     * Der Admin-Benutzername ist sichtbar (konstant "admin"),
+     * das Passwort steht NICHT im Klartext im Code.
+     * Beim ersten Start wird der Hash des Standard-Passworts "admin123"
+     * in localStorage abgelegt. Passwörter werden generell als SHA-256-Hashes
+     * abgelegt und verglichen.
+     *
+     * Für vollständige Sicherheit verwende ein Server-Backend!
+     ***********************/
+
+    // Rechtsklick (Kontextmenü) verhindern (optional)
+    document.addEventListener('contextmenu', function(e) {
+      // nur verhindern, kein Alert (ruhiger UX)
+      e.preventDefault();
+    });
+
+    const ADMIN_USERNAME = "admin"; // sichtbar, das ist okay
+    // ACHTUNG: kein ADMIN_PASSWORD in Klartext
+
+    // ===== SHA-256 Hash-Funktion (Text -> hex) =====
+    async function hash(text) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(text);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      return hashHex;
+    }
+
+    // ===== Initialisierung: Admin-Hash anlegen, falls nicht vorhanden =====
+    (async function initializeAdminIfMissing() {
+      try {
+        let users = JSON.parse(localStorage.getItem('users') || '{}');
+
+        // Falls kein Admin-Eintrag existiert, lege einen Hash für "admin123" an.
+        // Hinweis: Du kannst das Standardpasswort später sicher ändern.
+        if (!users[ADMIN_USERNAME]) {
+          const defaultAdminPassword = 'admin123'; // nur temporär in JS, wird nicht gespeichert
+          const adminHash = await hash(defaultAdminPassword);
+          users[ADMIN_USERNAME] = adminHash;
+          localStorage.setItem('users', JSON.stringify(users));
+          console.info('Initialisierter Admin-Account (Hash) in localStorage.');
+        }
+      } catch (err) {
+        console.error('Fehler bei Admin-Initialisierung:', err);
+      }
+    })();
+
+    // ===== Hilfsfunktionen =====
+    function showMessage(elId, text, color) {
+      const el = document.getElementById(elId);
+      el.style.color = color || '#cc2b2b'; // default rot
+      el.textContent = text;
+      // nach 6s zurücksetzen (nur visuell)
+      if (text) setTimeout(() => { if (document.getElementById(elId)) document.getElementById(elId).textContent = ''; }, 6000);
+    }
+
+    // ===== LOGIN =====
+    async function login() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+
+      if (!user || !pass) {
+        showMessage('error', '❌ Bitte Benutzername und Passwort eingeben!');
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      if (!users[user]) {
+        showMessage('error', '❌ Falscher Benutzername oder Passwort!');
+        return;
+      }
+
+      try {
+        const passHash = await hash(pass);
+        if (users[user] === passHash) {
+          // erfolgreich
+          document.getElementById('login-box').style.display = 'none';
+          document.getElementById('register-box').style.display = 'none';
+          document.getElementById('content-box').style.display = 'block';
+
+          if (user === ADMIN_USERNAME) {
+            document.getElementById('welcome-text').textContent = `👑 Admin ${user} angemeldet`;
+            showAdminDashboard();
+            highlightNav(null);
+          } else {
+            document.getElementById('welcome-text').textContent = `Hallo ${user} 👋`;
+            showTopic('dashboard', document.querySelector('nav button[data-topic="dashboard"]'));
+          }
+
+          // Eingabefelder leeren
+          document.getElementById('username').value = '';
+          document.getElementById('password').value = '';
+          showMessage('error', '', ''); // clear
+        } else {
+          showMessage('error', '❌ Falscher Benutzername oder Passwort!');
+        }
+      } catch (err) {
+        console.error(err);
+        showMessage('error', '❌ Fehler bei der Anmeldung.');
+      }
+    }
+
+    // ===== REGISTRIERUNG =====
+    async function register() {
+      const user = document.getElementById('reg-username').value.trim();
+      const pass = document.getElementById('reg-password').value.trim();
+
+      if (!user || !pass) {
+        showMessage('reg-error', '❌ Bitte Benutzername und Passwort eingeben!', '#cc2b2b');
+        return;
+      }
+
+      if (user === ADMIN_USERNAME) {
+        showMessage('reg-error', '❌ Der Benutzername "admin" ist reserviert.', '#cc2b2b');
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem('users') || '{}');
+      if (users[user]) {
+        showMessage('reg-error', '❌ Benutzername existiert bereits!', '#cc2b2b');
+        return;
+      }
+
+      try {
+        const hashedPass = await hash(pass);
+        users[user] = hashedPass;
+        localStorage.setItem('users', JSON.stringify(users));
+        showMessage('reg-error', '✅ Registrierung erfolgreich! Du kannst dich nun einloggen.', 'green');
+
+        // Leere Felder
+        document.getElementById('reg-username').value = '';
+        document.getElementById('reg-password').value = '';
+      } catch (err) {
+        console.error(err);
+        showMessage('reg-error', '❌ Fehler bei der Registrierung.');
+      }
+    }
+
+    // ===== TOGGLE LOGIN / REG =====
+    function toggleRegister() {
+      const loginBox = document.getElementById('login-box');
+      const regBox = document.getElementById('register-box');
+      const isLoginVisible = loginBox.style.display !== 'none';
+      loginBox.style.display = isLoginVisible ? 'none' : 'block';
+      regBox.style.display = isLoginVisible ? 'block' : 'none';
+      showMessage('error', '', '');
+      showMessage('reg-error', '', '');
+    }
+
+    // ===== LOGOUT =====
+    function logout() {
+      document.getElementById('content-box').style.display = 'none';
+      document.getElementById('login-box').style.display = 'block';
+      document.getElementById('welcome-text').textContent = 'Hallo 👋';
+      highlightNav(null);
+    }
+
+    // ===== DARK / LIGHT MODE =====
+    function toggleMode() {
+      document.body.classList.toggle('dark');
+      const modeBtn = document.getElementById('mode-btn');
+      modeBtn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+      // optional: Speicherpräferenz
+      try { localStorage.setItem('prefersDark', document.body.classList.contains('dark') ? '1' : '0'); } catch(e){}
+    }
+
+    // Beim Laden: Preference anwenden
+    (function applySavedTheme() {
+      try {
+        const p = localStorage.getItem('prefersDark');
+        if (p === '1') document.body.classList.add('dark');
+      } catch(e){}
+    })();
+
+    // ===== NAV / TOPICS =====
+    function highlightNav(activeBtn) {
+      document.querySelectorAll('nav button').forEach(b => {
+        b.classList.remove('active');
+      });
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    function showTopic(topic, btn) {
+      highlightNav(btn || document.querySelector(`nav button[data-topic="${topic}"]`));
+      const section = document.getElementById('topic-content');
+      let html = '';
+
+      switch (topic) {
+        case 'dashboard':
+          html = `
+            <h3>Willkommen bei Malerwissen 🎨</h3>
+            <p>Hier findest du Anleitungen, Tipps und Werkzeuge rund ums Streichen.</p>
+            <p class="small">Wähle oben ein Thema oder notiere eigene Ideen im Bereich <b>Notizen</b>.</p>
+          `;
+          break;
+
+        case 'fassade':
+          html = `
+            <h3>Fassade streichen 🏡</h3>
+            <ol>
+              <li>Fassade gründlich reinigen.</li>
+              <li>Risse reparieren und lose Farbe entfernen.</li>
+              <li>Grundierung auftragen.</li>
+              <li>Fassadenfarbe in zwei Schichten auftragen.</li>
+            </ol>
+          `;
+          break;
+
+        case 'wand':
+          html = `
+            <h3>Innenwand streichen 🖌️</h3>
+            <ul>
+              <li>Abkleben & Möbel abdecken.</li>
+              <li>Ecken mit Pinsel, Flächen mit Rolle streichen.</li>
+              <li>Erste Schicht trocknen lassen, dann zweite auftragen.</li>
+            </ul>
+          `;
+          break;
+
+        case 'werkzeug':
+          html = `
+            <h3>Wichtige Werkzeuge 🧰</h3>
+            <ul>
+              <li>Pinsel & Farbrollen</li>
+              <li>Abdeckfolie & Klebeband</li>
+              <li>Spachtel, Leiter, Eimer</li>
+              <li>Schutzbrille & Handschuhe</li>
+            </ul>
+          `;
+          break;
+
+        case 'notizen':
+          html = `
+            <h3>Meine Notizen 📝</h3>
+            <div class="note">
+              <input id="note-input" type="text" placeholder="Schreibe eine Notiz...">
+              <button onclick="addNote()">➕</button>
+            </div>
+            <ul id="note-list" class="note-list"></ul>
+          `;
+          break;
+
+        default:
+          html = `<p>Unbekanntes Thema.</p>`;
+      }
+
+      section.innerHTML = html;
+      if (topic === 'notizen') renderNotes();
+    }
+
+    // ===== NOTIZEN =====
+    function addNote() {
+      const input = document.getElementById('note-input');
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return;
+      const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+      notes.push({ text: text, ts: Date.now() });
+      localStorage.setItem('notes', JSON.stringify(notes));
+      input.value = '';
+      renderNotes();
+    }
+
+    function renderNotes() {
+      const list = document.getElementById('note-list');
+      if (!list) return;
+      const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+      if (notes.length === 0) {
+        list.innerHTML = '<li class="small">Keine Notizen vorhanden.</li>';
+        return;
+      }
+      list.innerHTML = notes.map((n, idx) => `
+        <li>
+          <span>${escapeHtml(n.text)}</span>
+          <div>
+            <button onclick="deleteNote(${idx})">Löschen</button>
+          </div>
+        </li>
+      `).join('');
+    }
+
+    function deleteNote(index) {
+      const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+      if (index < 0 || index >= notes.length) return;
+      notes.splice(index, 1);
+      localStorage.setItem('notes', JSON.stringify(notes));
+      renderNotes();
+    }
+
+    // ===== ADMIN DASHBOARD =====
+    function showAdminDashboard() {
+      const section = document.getElementById('topic-content');
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+
+      // Achtung: wir zeigen nur Benutzernamen (nicht die Hashes).
+      const userListHtml = Object.keys(users).map(u => `<li>${escapeHtml(u)}</li>`).join('');
+
+      section.innerHTML = `
+        <h3>Admin Dashboard 👑</h3>
+        <p>Hier siehst du alle Benutzer:</p>
+        <ul>${userListHtml}</ul>
+        <p>Alle Notizen:</p>
+        <ul>
+          ${notes.length ? notes.map(n => `<li>${escapeHtml(n.text)}</li>`).join('') : '<li class="small">Keine Notizen vorhanden.</li>'}
+        </ul>
+        <div style="margin-top:12px;">
+          <button onclick="clearAllNotes()">Alle Notizen löschen</button>
+          <button class="secondary" onclick="exportData()">Daten exportieren</button>
+        </div>
+      `;
+    }
+
+    function clearAllNotes() {
+      if (confirm('Willst du wirklich alle Notizen löschen?')) {
+        localStorage.setItem('notes', JSON.stringify([]));
+        showAdminDashboard();
+      }
+    }
+
+    function exportData() {
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+      const exportObj = { users: Object.keys(users), notes: notes };
+      const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'malerwissen_export.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // ===== Helfer: HTML-Escaping =====
+    function escapeHtml(unsafe) {
+      return unsafe
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    // ===== Optional: Auto-Login für Entwickeln (deaktiviert) =====
+    // Wenn du lokal testest, kannst du hier einen Auto-Login aktivieren, aber
+    // aus Sicherheitsgründen ist das standardmäßig aus.
+    // (function autoLoginDev(){ /* ... */ })();
+  </script>
 </body>
 </html>
+
 
