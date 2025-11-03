@@ -165,3 +165,31 @@ function renderNotes() {
   list.innerHTML = notes.map(n => `<li>${n}</li>`).join("");
 }
 
+function showAdminDashboard() {
+  const section = document.getElementById("topic-content");
+  const users = JSON.parse(localStorage.getItem("users") || "{}");
+  const notes = JSON.parse(localStorage.getItem("notes") || "[]");
+
+  section.innerHTML = `
+    <h3>Admin Dashboard 👑</h3>
+    <p>Hier siehst du alle Benutzer:</p>
+    <ul>
+      ${Object.keys(users).map(u => `<li>${u}</li>`).join('')}
+    </ul>
+    <p>Alle Notizen:</p>
+    <ul>
+      ${notes.map(n => `<li>${n}</li>`).join('')}
+    </ul>
+    <button onclick="clearAllNotes()">Alle Notizen löschen</button>
+  `;
+}
+
+// Notizen löschen (Admin)
+function clearAllNotes() {
+  if(confirm("Willst du wirklich alle Notizen löschen?")) {
+    localStorage.setItem("notes", JSON.stringify([]));
+    showAdminDashboard();
+  }
+}
+
+
