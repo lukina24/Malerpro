@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Malerwissen Pro — Admin-Kontrolle</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malerwissen Pro – Sicher</title>
   <style>
     :root {
       --bg: #f5f8ff;
@@ -29,243 +28,278 @@
       height: 100vh;
       transition: background 0.3s, color 0.3s;
     }
-    .container { width: 92%; max-width: 700px; }
+    .container { width: 90%; max-width: 600px; }
     .card {
       background: var(--card);
       border-radius: 14px;
-      padding: 28px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
       text-align: center;
     }
-    input, button { font-family: inherit; }
-    input[type="text"], input[type="password"] {
+    input {
       display: block;
       width: 80%;
       margin: 10px auto;
       padding: 10px;
       border-radius: 8px;
       border: 1px solid #ccc;
+      font-size: 1em;
+      background: white;
     }
     button {
       background: var(--accent);
       color: white;
       border: none;
-      padding: 10px 16px;
+      padding: 10px 18px;
       border-radius: 8px;
       cursor: pointer;
+      transition: 0.2s;
       margin: 5px;
     }
-    button.secondary {
-      background: transparent;
-      color: var(--accent);
-      border: 1px solid rgba(0,119,255,0.3);
+    button:hover { transform: scale(1.05); }
+    #error, #reg-error { color: red; font-size: 0.9em; margin-top: 10px; }
+    nav { margin: 20px 0; }
+    header { display: flex; justify-content: space-between; align-items: center; }
+    .note { margin-top: 15px; display: flex; gap: 10px; }
+    .note input { flex: 1; }
+    .note-list {
+      margin-top: 10px;
+      list-style-type: none;
+      padding: 0;
     }
-    #error, #reg-error {
-      color: #cc2b2b;
-      min-height: 1.2em;
-    }
-    nav {
-      margin: 16px 0;
+    .note-list li {
+      background: rgba(0, 119, 255, 0.1);
+      border-left: 4px solid var(--accent);
+      padding: 5px 10px;
+      margin: 5px 0;
+      border-radius: 4px;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 6px;
+      justify-content: space-between;
+      align-items: center;
     }
-    nav button.active {
-      background: var(--accent);
-      color: #fff;
+    .danger {
+      background: #d9534f;
     }
-    ul { text-align: left; }
-    .danger { background: #d9534f; color: #fff; }
-    .small { font-size: 0.9em; color: #666; }
   </style>
 </head>
 <body>
   <div class="container">
+
+    <!-- LOGIN -->
     <div id="login-box" class="card">
-      <h2>🎨 Malerwissen Pro</h2>
+      <h2>🎨 Willkommen bei Malerwissen Pro</h2>
       <input type="text" id="username" placeholder="Benutzername">
       <input type="password" id="password" placeholder="Passwort">
-      <div>
-        <button onclick="login()">Einloggen</button>
-        <button class="secondary" onclick="toggleRegister()">Registrieren</button>
-      </div>
+      <button onclick="login()">Einloggen</button>
+      <p>oder <a href="#" onclick="toggleRegister()">Registrieren</a></p>
       <p id="error"></p>
     </div>
 
+    <!-- REGISTRIERUNG -->
     <div id="register-box" class="card" style="display:none;">
       <h2>📝 Registrieren</h2>
       <input type="text" id="reg-username" placeholder="Benutzername">
       <input type="password" id="reg-password" placeholder="Passwort">
-      <div>
-        <button onclick="register()">Registrieren</button>
-        <button class="secondary" onclick="toggleRegister()">Zurück</button>
-      </div>
+      <button onclick="register()">Registrieren</button>
+      <p>Bereits registriert? <a href="#" onclick="toggleRegister()">Hier einloggen</a></p>
       <p id="reg-error"></p>
     </div>
 
+    <!-- INHALT -->
     <div id="content-box" class="card" style="display:none;">
-      <h2 id="welcome-text"></h2>
-      <div>
-        <button id="mode-btn" onclick="toggleMode()">🌙</button>
-        <button onclick="logout()">🚪 Logout</button>
-      </div>
+      <header>
+        <h2 id="welcome-text">Hallo 👋</h2>
+        <div>
+          <button id="mode-btn" onclick="toggleMode()">🌙</button>
+          <button onclick="logout()">🚪 Logout</button>
+        </div>
+      </header>
+
       <nav>
-        <button data-topic="dashboard" onclick="showTopic('dashboard', this)">🏠 Übersicht</button>
-        <button data-topic="fassade" onclick="showTopic('fassade', this)">🏡 Fassade</button>
-        <button data-topic="wand" onclick="showTopic('wand', this)">🖌️ Innenwand</button>
-        <button data-topic="werkzeug" onclick="showTopic('werkzeug', this)">🧰 Werkzeuge</button>
-        <button data-topic="notizen" onclick="showTopic('notizen', this)">📝 Notizen</button>
+        <button onclick="showTopic('dashboard')">🏠 Übersicht</button>
+        <button onclick="showTopic('fassade')">🏡 Fassade</button>
+        <button onclick="showTopic('wand')">🖌️ Innenwand</button>
+        <button onclick="showTopic('werkzeug')">🧰 Werkzeuge</button>
+        <button onclick="showTopic('notizen')">📝 Notizen</button>
       </nav>
+
       <section id="topic-content"></section>
     </div>
   </div>
 
   <script>
-    const ADMIN_USERNAME = "admin";
-
-    async function hash(t) {
-      const data = new TextEncoder().encode(t);
-      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+    // ======= SICHERE HASH-FUNKTION =======
+    async function hash(text) {
+      const msgUint8 = new TextEncoder().encode(text);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
     }
 
-    (async function initAdmin(){
-      const users = JSON.parse(localStorage.getItem("users")||"{}");
-      if (!users[ADMIN_USERNAME]) {
-        users[ADMIN_USERNAME] = await hash("admin123");
+    // ======= ADMIN INITIALISIERUNG =======
+    async function initAdmin() {
+      let users = JSON.parse(localStorage.getItem("users") || "{}");
+      if (!users["admin"]) {
+        const adminHash = await hash("admin123");
+        users["admin"] = adminHash;
         localStorage.setItem("users", JSON.stringify(users));
+        console.log("👑 Admin wurde erstellt (admin / admin123)");
       }
-    })();
+    }
 
+    window.addEventListener("DOMContentLoaded", initAdmin);
+
+    // ======= LOGIN =======
     async function login() {
-      const u = username.value.trim();
-      const p = password.value.trim();
-      const users = JSON.parse(localStorage.getItem("users")||"{}");
-      if (!users[u]) return error.textContent="❌ Benutzer nicht gefunden!";
-      const h = await hash(p);
-      if (h!==users[u]) return error.textContent="❌ Passwort falsch!";
-      error.textContent="";
-      loginBox.style.display="none";
-      registerBox.style.display="none";
-      contentBox.style.display="block";
-      welcomeText.textContent = (u===ADMIN_USERNAME) ? "👑 Admin angemeldet" : `Hallo ${u}`;
-      if (u===ADMIN_USERNAME) showAdminDashboard(); else showTopic("dashboard");
+      const user = username.value.trim();
+      const pass = password.value.trim();
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      const error = document.getElementById("error");
+      if (!users[user]) return error.textContent = "❌ Benutzer existiert nicht!";
+      const passHash = await hash(pass);
+      if (users[user] !== passHash) return error.textContent = "❌ Passwort falsch!";
+      error.textContent = "";
+      document.getElementById("login-box").style.display = "none";
+      document.getElementById("register-box").style.display = "none";
+      document.getElementById("content-box").style.display = "block";
+      welcomeText.textContent = (user === "admin") ? "👑 Admin angemeldet" : `Hallo ${user} 👋`;
+      if (user === "admin") showAdminDashboard(); else showTopic("dashboard");
     }
 
+    // ======= REGISTRIERUNG =======
     async function register() {
-      const u = regUsername.value.trim(), p = regPassword.value.trim();
-      if (!u||!p) return regError.textContent="❌ Bitte ausfüllen!";
-      if (u===ADMIN_USERNAME) return regError.textContent="❌ Benutzername 'admin' ist reserviert!";
-      const users = JSON.parse(localStorage.getItem("users")||"{}");
-      if (users[u]) return regError.textContent="❌ Benutzer existiert!";
-      users[u] = await hash(p);
+      const user = regUsername.value.trim();
+      const pass = regPassword.value.trim();
+      const error = document.getElementById("reg-error");
+
+      if (!user || !pass) return error.textContent = "❌ Bitte alle Felder ausfüllen!";
+      if (user === "admin") return error.textContent = "❌ 'admin' ist reserviert!";
+
+      let users = JSON.parse(localStorage.getItem("users") || "{}");
+      if (users[user]) return error.textContent = "❌ Benutzername existiert bereits!";
+
+      const passHash = await hash(pass);
+      users[user] = passHash;
       localStorage.setItem("users", JSON.stringify(users));
-      regError.textContent="✅ Erfolgreich registriert!";
-      regUsername.value=""; regPassword.value="";
+
+      error.style.color = "green";
+      error.textContent = "✅ Registrierung erfolgreich! Du kannst dich nun einloggen.";
     }
 
-    function toggleRegister(){
-      loginBox.style.display = loginBox.style.display==="none"?"block":"none";
-      registerBox.style.display = registerBox.style.display==="none"?"block":"none";
+    // ======= TOGGLE =======
+    function toggleRegister() {
+      loginBox.style.display = loginBox.style.display === "none" ? "block" : "none";
+      registerBox.style.display = registerBox.style.display === "none" ? "block" : "none";
+      error.textContent = "";
+      regError.textContent = "";
     }
 
-    function logout(){
-      contentBox.style.display="none";
-      loginBox.style.display="block";
+    // ======= LOGOUT =======
+    function logout() {
+      contentBox.style.display = "none";
+      loginBox.style.display = "block";
     }
 
-    function toggleMode(){
+    // ======= DARK/LIGHT MODE =======
+    function toggleMode() {
       document.body.classList.toggle("dark");
-      modeBtn.textContent = document.body.classList.contains("dark")?"☀️":"🌙";
+      modeBtn.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
     }
 
-    function highlight(btn){
-      document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
-      if(btn) btn.classList.add("active");
-    }
-
-    function showTopic(topic,btn){
-      highlight(btn);
-      const c = document.getElementById("topic-content");
-      if (topic==="dashboard") c.innerHTML="<p>Willkommen bei <b>Malerwissen Pro</b>.</p>";
-      else if (topic==="fassade") c.innerHTML="<p>Fassade streichen Anleitung...</p>";
-      else if (topic==="wand") c.innerHTML="<p>Innenwand Tipps...</p>";
-      else if (topic==="werkzeug") c.innerHTML="<p>Werkzeugübersicht...</p>";
-      else if (topic==="notizen") {
-        c.innerHTML=`<h3>Notizen</h3><input id='note' placeholder='Neue Notiz...'>
-        <button onclick='addNote()'>➕</button><ul id='notes'></ul>`;
-        renderNotes();
+    // ======= THEMEN =======
+    function showTopic(topic) {
+      const section = document.getElementById("topic-content");
+      let html = "";
+      switch (topic) {
+        case "dashboard":
+          html = `<h3>Willkommen bei Malerwissen 🎨</h3><p>Wähle oben ein Thema aus.</p>`;
+          break;
+        case "fassade":
+          html = `<h3>🏡 Fassade streichen</h3><p>Tipps für Außenfassaden...</p>`;
+          break;
+        case "wand":
+          html = `<h3>🖌️ Innenwand streichen</h3><p>Anleitung für Innenräume...</p>`;
+          break;
+        case "werkzeug":
+          html = `<h3>🧰 Werkzeuge</h3><p>Liste nützlicher Werkzeuge...</p>`;
+          break;
+        case "notizen":
+          html = `<h3>📝 Notizen</h3>
+                  <div class="note"><input id="note-input" placeholder="Neue Notiz..."><button onclick="addNote()">➕</button></div>
+                  <ul id="note-list" class="note-list"></ul>`;
+          break;
       }
+      section.innerHTML = html;
+      if (topic === "notizen") renderNotes();
     }
 
-    function addNote(){
-      const t = note.value.trim();
-      if (!t) return;
-      const arr = JSON.parse(localStorage.getItem("notes")||"[]");
-      arr.push(t);
-      localStorage.setItem("notes", JSON.stringify(arr));
-      note.value=""; renderNotes();
-    }
-    function renderNotes(){
-      const arr = JSON.parse(localStorage.getItem("notes")||"[]");
-      notes.innerHTML = arr.map((n,i)=>`<li>${n} <button onclick='delNote(${i})'>❌</button></li>`).join("");
-    }
-    function delNote(i){
-      const arr = JSON.parse(localStorage.getItem("notes")||"[]");
-      arr.splice(i,1);
-      localStorage.setItem("notes", JSON.stringify(arr));
+    // ======= NOTIZEN =======
+    function addNote() {
+      const input = document.getElementById("note-input");
+      if (!input.value.trim()) return;
+      const notes = JSON.parse(localStorage.getItem("notes") || "[]");
+      notes.push(input.value.trim());
+      localStorage.setItem("notes", JSON.stringify(notes));
+      input.value = "";
       renderNotes();
     }
 
-    // ==== ADMIN DASHBOARD ====
-    function showAdminDashboard(){
-      const c = document.getElementById("topic-content");
-      const users = JSON.parse(localStorage.getItem("users")||"{}");
-      const notes = JSON.parse(localStorage.getItem("notes")||"[]");
+    function renderNotes() {
+      const list = document.getElementById("note-list");
+      const notes = JSON.parse(localStorage.getItem("notes") || "[]");
+      list.innerHTML = notes.map((n, i) => `<li>${n} <button onclick="delNote(${i})">❌</button></li>`).join("");
+    }
 
-      let userList = Object.keys(users).map(u =>
-        `<li>${u} ${u!=="admin"?`<button class='danger' onclick='deleteUser("${u}")'>Löschen</button>`:"<span class='small'>(geschützt)</span>"}</li>`
-      ).join("");
+    function delNote(i) {
+      const notes = JSON.parse(localStorage.getItem("notes") || "[]");
+      notes.splice(i, 1);
+      localStorage.setItem("notes", JSON.stringify(notes));
+      renderNotes();
+    }
 
-      c.innerHTML = `
+    // ======= ADMIN DASHBOARD =======
+    function showAdminDashboard() {
+      const section = document.getElementById("topic-content");
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      const notes = JSON.parse(localStorage.getItem("notes") || "[]");
+
+      section.innerHTML = `
         <h3>Admin Dashboard 👑</h3>
         <p><b>Benutzerverwaltung:</b></p>
-        <ul>${userList}</ul>
+        <ul>${Object.keys(users).map(u => `<li>${u} ${u !== "admin" ? `<button class='danger' onclick='deleteUser("${u}")'>Löschen</button>` : "(geschützt)"}</li>`).join("")}</ul>
         <button class='danger' onclick='deleteAllUsers()'>⚠️ Alle Benutzer löschen (außer Admin)</button>
         <hr>
-        <p><b>Notizenverwaltung:</b></p>
-        <ul>${notes.map(n=>`<li>${n}</li>`).join("") || "<li>Keine Notizen.</li>"}</ul>
+        <p><b>Notizen:</b></p>
+        <ul>${notes.map(n => `<li>${n}</li>`).join("") || "<li>Keine Notizen.</li>"}</ul>
         <button class='danger' onclick='clearAllNotes()'>🗑️ Alle Notizen löschen</button>
       `;
     }
 
-    function deleteUser(username){
-      if (username==="admin") return alert("Admin kann nicht gelöscht werden!");
+    function deleteUser(username) {
+      if (username === "admin") return alert("Admin kann nicht gelöscht werden!");
       if (!confirm(`Benutzer "${username}" wirklich löschen?`)) return;
-      const users = JSON.parse(localStorage.getItem("users")||"{}");
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
       delete users[username];
       localStorage.setItem("users", JSON.stringify(users));
       showAdminDashboard();
     }
 
-    function deleteAllUsers(){
+    function deleteAllUsers() {
       if (!confirm("⚠️ Wirklich ALLE Benutzer (außer Admin) löschen?")) return;
-      const users = JSON.parse(localStorage.getItem("users")||"{}");
-      for (const u in users) if (u!=="admin") delete users[u];
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      for (const u in users) if (u !== "admin") delete users[u];
       localStorage.setItem("users", JSON.stringify(users));
       showAdminDashboard();
     }
 
-    function clearAllNotes(){
+    function clearAllNotes() {
       if (confirm("Alle Notizen löschen?")) {
-        localStorage.setItem("notes","[]");
+        localStorage.setItem("notes", "[]");
         showAdminDashboard();
       }
     }
   </script>
 </body>
 </html>
-
 
 
