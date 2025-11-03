@@ -1,3 +1,9 @@
+// Rechtsklick auf der Seite verbieten
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    alert("Rechtsklick ist auf dieser Seite deaktiviert!");
+});
+
 // Fester Admin-Account
 const ADMIN_USERNAME = "admin";
 const ADMIN_PASSWORD = "admin123";
@@ -191,5 +197,6 @@ function clearAllNotes() {
     showAdminDashboard();
   }
 }
+
 
 
