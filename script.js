@@ -1,4 +1,14 @@
-// ==================== LOGIN ====================
+// Fester Admin-Account
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "admin123";
+
+// Initial Admin im localStorage speichern, falls noch nicht vorhanden
+let users = JSON.parse(localStorage.getItem("users") || "{}");
+if (!users[ADMIN_USERNAME]) {
+    users[ADMIN_USERNAME] = ADMIN_PASSWORD;
+    localStorage.setItem("users", JSON.stringify(users));
+}
+
 function login() {
   const user = document.getElementById("username").value.trim();
   const pass = document.getElementById("password").value.trim();
@@ -10,8 +20,14 @@ function login() {
     document.getElementById("login-box").style.display = "none";
     document.getElementById("register-box").style.display = "none";
     document.getElementById("content-box").style.display = "block";
-    document.getElementById("welcome-text").textContent = `Hallo ${user} 👋`;
-    showTopic('dashboard');
+
+    if(user === ADMIN_USERNAME){
+      document.getElementById("welcome-text").textContent = `👑 Admin ${user} angemeldet`;
+      showAdminDashboard();
+    } else {
+      document.getElementById("welcome-text").textContent = `Hallo ${user} 👋`;
+      showTopic('dashboard');
+    }
   } else {
     error.textContent = "❌ Falscher Benutzername oder Passwort!";
   }
@@ -148,3 +164,4 @@ function renderNotes() {
   const notes = JSON.parse(localStorage.getItem("notes") || "[]");
   list.innerHTML = notes.map(n => `<li>${n}</li>`).join("");
 }
+
