@@ -1,6 +1,49 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+  <script>
+    // Rechtsklick auf der ganzen Seite verhindern
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        alert("Rechtsklick ist deaktiviert!");
+    });
+
+    // Tasten für Entwickler-Tools und Seitenquelltext blockieren
+    document.addEventListener('keydown', function(e) {
+        // F12
+        if (e.key === "F12") {
+            e.preventDefault();
+            alert("F12 ist deaktiviert!");
+        }
+        // Ctrl+Shift+I (DevTools öffnen)
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") {
+            e.preventDefault();
+            alert("Öffnen der Entwicklertools ist deaktiviert!");
+        }
+        // Ctrl+Shift+J (Konsole öffnen)
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "j") {
+            e.preventDefault();
+            alert("Öffnen der Konsole ist deaktiviert!");
+        }
+        // Ctrl+U (Quelltext anzeigen)
+        if (e.ctrlKey && e.key.toLowerCase() === "u") {
+            e.preventDefault();
+            alert("Quelltext anzeigen ist deaktiviert!");
+        }
+        // Ctrl+S (Speichern)
+        if (e.ctrlKey && e.key.toLowerCase() === "s") {
+            e.preventDefault();
+            alert("Speichern ist deaktiviert!");
+        }
+    });
+
+    // Drag & Drop von Bildern blockieren
+    document.addEventListener('dragstart', function(e) {
+        e.preventDefault();
+        alert("Drag & Drop ist deaktiviert!");
+    });
+</script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Malerwissen Pro</title>
@@ -56,3 +99,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
